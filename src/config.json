@@ -1,10 +1,10 @@
 {
   "api": { 
-    "invokeUrl": "https://5bltcq602h.execute-api.us-west-2.amazonaws.com/prod"
+    "invokeUrl": "https://ltd-test-app.auth.us-east-1.amazoncognito.com"
   },
   "cognito": {
-    "REGION": "us-west-2",
-    "USER_POOL_ID": "us-west-2_flCJaoDig",
-    "APP_CLIENT_ID": "159ufjrihgehb67sn373aotli7"
+    "REGION": "us-east-1",
+    "USER_POOL_ID": "us-east-1_DbXv0NnP9",
+    "APP_CLIENT_ID": "585jk1hnj20libt5buvj4fahfp"
   }
 }

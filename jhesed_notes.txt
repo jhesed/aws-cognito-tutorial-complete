@@ -1,0 +1,98 @@
+AWS COGNITO
+
+YT TUTORIAL:  
+	- AWS Cognito + Ampify:
+		* Part 1: https://www.youtube.com/watch?v=EaDMG4amEfk
+		* Part 2: https://www.youtube.com/watch?v=2SaO1Pvah2k
+READINGS:
+	- Flask + cognito: https://medium.com/@eu.galioto/the-simplest-server-configuration-for-your-aws-amplify-cognito-app-a074c01c743d
+	- Flask + cognito package: https://pypi.org/project/Flask-Cognito/
+	- Flask-AWSCognito: https://github.com/cgauge/Flask-AWSCognito/
+	- https://medium.com/analytics-vidhya/integrating-cognito-with-flask-e00010866054
+	- https://github.com/jetbridge/flask_cognito
+
+TECHONOLOGIES:
+- Cognito
+- Amplify library (js library)
+	* JS SDK has issue with secret
+
+GOALS:
+	- MILESTONE A:
+		* Form 1: Register account using cognito
+		* Login Account
+		* Form 2: Upload KYC IDs
+	- MILESTONE B:
+		* Migrate existing accounts to cognito
+	- MILESTONE C:
+		* Link existing SWP to newly created LTD
+	- MILESTONE D:
+		* Incorporate e.g gmail, etc? 
+			** There's such a thing as e.g. Google Identity Pools, Facebook, Apple:
+				*** https://docs.aws.amazon.com/cognito/latest/developerguide/google.html
+
+
+FOR DISCUSSION:
+- Are FE devs going to connect directly to Cognito (e.g. using amplify), or are we going to provide BE wrapper for cognito?
+- Shared SSO Pool for LTD and SWP? Or separate?
+	* Difference: Password complexity, sponsor code, no user name for swapoo
+- How to link cognito session with BE code
+- Handling localization
+- Real time password checking
+- How to handle feature flags (currently stored in session)
+- Should we connect to Cognito everytime (slower) or should we cache the token in BE e.g. redis store for quicker access
+- How to handle referral code?  We can create custom attribute BUT if SSO Pool will be shared between LTD and SWP, SWP don't require it
+- How to link cognito identities?  Applicable for gmail etc as well:
+	* https://forums.aws.amazon.com/thread.jspa?threadID=240638
+- How to handle security matrix? e.g. for forgot password, etc, which is built in already to cognito
+- Error messages are verbose to the default Cognito
+- WE CANNOT UNREQUIRE required attributes after pool creation!!
+- Where does UPLOAD KYC comes into place?  Should it be stored in cognito or BE API?
+
+ARCHITECTURE OPTIONS:
+
+	OPTION 1
+
+	- REGISTRATION -> LOGIN -> GET BINARY TREE :
+		
+		* FE (e.g amplify) -> SSO (cognito) -> BE -> SSO (check auth) -> BE ()-> FE
+			1. FE calls AWS SSO Cognito directly via e.g. AWS Amplify library to register user
+			2. SSO returns Successful registration with session token
+			3. FE calls GET BINARY TREE API from BE API
+			4. BE connects to AWS Cognito API to validate auth
+				4.1 Authenticated?
+				4.1.1. Yes.  Returns Binary Tree info to user
+				4.1.2. No. Returns INVALID_CREDENTIAL
+
+			** Advantages:
+				*** Registration, login APIs should be faster as these are direct calls
+			** Disadvantages:
+				*** Less flexible
+				*** Slower in non-SSO APIs, as BE will connect to cognito on every API that requires AUTH
+					**** We can cache the auth token BE side for x minutes.  If token is not found in cache, connect to cognito
+
+	OPTION 2:
+
+		* FE -> BE -> SSO (cognito) -> BE  
+			1. FE calls BE API to register User
+			2. BE API calls SSO Cognito to register User
+			3. SSO returns successful registration with session token to BE API
+			4. BE API reformats SSO response and injects custom response codes and return to FE
+				4.1 BE caches cognito token for faster access
+			5. FE calls GET BINARY TREE API from BE API
+			6. BE validates SSO cognito token:
+				6.1 Existing in local cache?
+				6.1.1. Yes. Returns Binary Tree info to user
+				6.1.2. No. Validate token from Cognito API
+				6.1.2.1. Valid?
+				6.1.2.1.1. Yes. Returns Binary Tree info to user
+				6.1.2.1.2 No. Validate token from Cognito API
+				
+
+			** Advantages:
+				*** More flexible.  e.g. we can inject custom responses that aren't available in cognito based on our use cases (e.g. feature flags, ask security question flag, etc.)
+
+POC
+
+OPTION 1:
+
+OPTION 2:
