@@ -4,12 +4,18 @@ YT TUTORIAL:
 	- AWS Cognito + Ampify:
 		* Part 1: https://www.youtube.com/watch?v=EaDMG4amEfk
 		* Part 2: https://www.youtube.com/watch?v=2SaO1Pvah2k
+	- flask + cognito:
+		* https://www.youtube.com/watch?v=qMtk4LJ5OfE
+		* https://github.com/Balta-zar/cognito-js-flask-tutorial
+
 READINGS:
 	- Flask + cognito: https://medium.com/@eu.galioto/the-simplest-server-configuration-for-your-aws-amplify-cognito-app-a074c01c743d
 	- Flask + cognito package: https://pypi.org/project/Flask-Cognito/
 	- Flask-AWSCognito: https://github.com/cgauge/Flask-AWSCognito/
 	- https://medium.com/analytics-vidhya/integrating-cognito-with-flask-e00010866054
 	- https://github.com/jetbridge/flask_cognito
+	- S3 upload using amplify: https://dev.to/danielbayerlein/how-to-upload-images-to-amazon-s3-using-the-aws-amplify-storage-module-of6
+
 
 TECHONOLOGIES:
 - Cognito
@@ -24,7 +30,7 @@ GOALS:
 	- MILESTONE B:
 		* Migrate existing accounts to cognito
 	- MILESTONE C:
-		* Link existing SWP to newly created LTD
+		* Link existing Pool 1 to Pool 2
 	- MILESTONE D:
 		* Incorporate e.g gmail, etc? 
 			** There's such a thing as e.g. Google Identity Pools, Facebook, Apple:
@@ -33,14 +39,14 @@ GOALS:
 
 FOR DISCUSSION:
 - Are FE devs going to connect directly to Cognito (e.g. using amplify), or are we going to provide BE wrapper for cognito?
-- Shared SSO Pool for LTD and SWP? Or separate?
+- Shared SSO Pool for App1 and App2? Or separate?
 	* Difference: Password complexity, sponsor code, no user name for swapoo
 - How to link cognito session with BE code
 - Handling localization
 - Real time password checking
 - How to handle feature flags (currently stored in session)
 - Should we connect to Cognito everytime (slower) or should we cache the token in BE e.g. redis store for quicker access
-- How to handle referral code?  We can create custom attribute BUT if SSO Pool will be shared between LTD and SWP, SWP don't require it
+- How to handle referral code?  We can create custom attribute BUT if SSO Pool will be shared between apps, don't require it
 - How to link cognito identities?  Applicable for gmail etc as well:
 	* https://forums.aws.amazon.com/thread.jspa?threadID=240638
 - How to handle security matrix? e.g. for forgot password, etc, which is built in already to cognito
